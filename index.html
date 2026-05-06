@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes Keeper</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="screen">
+    <div class="card">
+      <h1>Notes Keeper</h1>
+      <p class="subtitle">Sign in to your notes</p>
+      <input id="login-username" type="text" placeholder="Username" />
+      <input id="login-password" type="password" placeholder="Password" />
+      <button onclick="login()">Sign In</button>
+      <p class="toggle-link">No account? <a href="#" onclick="showRegister()">Register</a></p>
+      <p id="login-error" class="error"></p>
+    </div>
+  </div>
+
+  <!-- Register Screen -->
+  <div id="register-screen" class="screen hidden">
+    <div class="card">
+      <h1>Create Account</h1>
+      <input id="reg-username" type="text" placeholder="Username" />
+      <input id="reg-password" type="password" placeholder="Password" />
+      <button onclick="register()">Register</button>
+      <p class="toggle-link">Have an account? <a href="#" onclick="showLogin()">Sign In</a></p>
+      <p id="reg-error" class="error"></p>
+    </div>
+  </div>
+
+  <!-- App Screen -->
+  <div id="app-screen" class="screen hidden">
+    <header>
+      <div class="header-left">
+        <h2>Notes Keeper</h2>
+        <span id="user-label"></span>
+      </div>
+      <button class="btn-outline" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="app-body">
+      <!-- Sidebar -->
+      <aside>
+        <input id="search-input" type="text" placeholder="Search notes..." oninput="renderNotes()" />
+        <button class="btn-primary full-width" onclick="newNote()">+ New Note</button>
+        <div id="notes-list"></div>
+      </aside>
+
+      <!-- Editor -->
+      <main id="editor-panel">
+        <div id="empty-state">Select a note or create a new one</div>
+        <div id="editor" class="hidden">
+          <input id="note-title" type="text" placeholder="Title" />
+          <textarea id="note-content" placeholder="Write your note here..."></textarea>
+          <div class="editor-actions">
+            <button class="btn-primary" onclick="saveNote()">Save</button>
+            <button class="btn-danger" onclick="deleteNote()">Delete</button>
+          </div>
+          <p id="save-status"></p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
