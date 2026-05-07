@@ -1,3 +1,4 @@
+// Load from .env (for local dev, use a build tool or manually set these)
 const SUPABASE_URL = 'https://gzlgufleaukelahqwofx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6bGd1ZmxlYXVrZWxhaHF3b2Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjQ4MTgsImV4cCI6MjA5MzA0MDgxOH0.eQTq-kLKV7E9XYTOVZMosZuG41Gfgq5sJD8sZUaE778';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -48,6 +49,18 @@ async function login() {
   document.getElementById('app-screen').classList.remove('hidden');
   document.getElementById('user-label').textContent = `Hi, ${username}`;
   renderNotes();
+}
+
+async function loginWithOAuth(provider) {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: provider,
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+  if (error) {
+    document.getElementById('login-error').textContent = error.message;
+  }
 }
 
 async function logout() {
@@ -151,10 +164,31 @@ let autoSaveTimer;
 sb.auth.getSession().then(({ data }) => {
   if (data.session) {
     currentUser = data.session.user;
-    const username = currentUser.user_metadata?.username || currentUser.email;
+    const username = currentUser.user_metadata?.username || 
+                     currentUser.user_metadata?.full_name || 
+                     currentUser.email.split('@')[0];
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app-screen').classList.remove('hidden');
     document.getElementById('user-label').textContent = `Hi, ${username}`;
     renderNotes();
+  }
+});
+
+// Listen for auth state changes (OAuth redirects)
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    currentUser = session.user;
+    const username = currentUser.user_metadata?.username || 
+                     currentUser.user_metadata?.full_name || 
+                     currentUser.email.split('@')[0];
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-screen').classList.remove('hidden');
+    document.getElementById('user-label').textContent = `Hi, ${username}`;
+    renderNotes();
+  } else if (event === 'SIGNED_OUT') {
+    currentUser = null;
+    currentNoteId = null;
+    document.getElementById('app-screen').classList.add('hidden');
+    document.getElementById('login-screen').classList.remove('hidden');
   }
 });
