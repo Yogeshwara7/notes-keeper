@@ -86,13 +86,3 @@ This is a pure frontend app — no server needed.
 2. Repo Settings → Pages → Branch: main → Save
 
 ---
-
-## Features
-- User registration and login
-- **OAuth login with Google & GitHub**
-- Create notes with title and content
-- Edit and delete notes
-- Auto-save while typing (1.2s debounce)
-- Search notes by keyword
-- **Modern silver/grey UI theme**
-- Responsive design
